@@ -1,0 +1,80 @@
+# version: '3.9'
+services:
+  besu-node1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Node1
+    privileged: true
+    command: /besu-24.5.2/n1up.sh
+    networks:
+      rede_besu:
+        ipv4_address: 10.10.0.11
+    ports:
+      - "8545:8545"
+      - "30303:30303"
+    environment:
+      - DFENCE_PKCS11_USER=Node1
+    restart: unless-stopped
+
+  besu-node2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Node2
+    privileged: true
+    command: sh -c "sleep 10 && /besu-24.5.2/n2up.sh"
+    networks:
+      rede_besu:
+        ipv4_address: 10.10.0.12
+    ports:
+      - "8546:8546"
+      - "30304:30304"
+    depends_on:
+      - besu-node1
+    environment:
+      - DFENCE_PKCS11_USER=Node2
+    restart: unless-stopped
+
+  besu-node3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Node3
+    privileged: true
+    command: sh -c "sleep 10 && /besu-24.5.2/n3up.sh"
+    networks:
+      rede_besu:
+        ipv4_address: 10.10.0.13
+    ports:
+      - "8547:8547"
+      - "30305:30305"
+    depends_on:
+      - besu-node1
+    environment:
+      - DFENCE_PKCS11_USER=Node3
+    restart: unless-stopped
+
+  besu-node4:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Node4
+    privileged: true
+    command: sh -c "sleep 10 && /besu-24.5.2/n4up.sh"
+    networks:
+      rede_besu:
+        ipv4_address: 10.10.0.14
+    ports:
+      - "8548:8548"
+      - "30306:30306"
+    depends_on:
+      - besu-node1
+    environment:
+      - DFENCE_PKCS11_USER=Node4
+    restart: unless-stopped
+
+networks:
+  rede_besu:
+    external: true
+    name: rede_besu
